@@ -1,0 +1,14 @@
+Client:
+- Put email into footer and contact page
+- Make the reserve (Modal)
+
+- Move from one offer to another when display the modal of the offer information
+
+- Ask for security
+- Ask for log
+
+myphotostudy.com
+admin.myphotostudy.com
+
+
+cq8S9rttqV0AAAAAAAAAG3e57oXdkkybnjXW47B1-1c

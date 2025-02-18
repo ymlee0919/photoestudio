@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+{% set page='offers' %}
+{% block title %}Error 404 - Página no encontrada{% endblock %}
+
+<!-- Navbar Start -->
+{% block navbar %}
+    {% include "./components/simpleNavbar.html.twig" %}
+{% endblock %}
+<!-- Navbar End -->
+
+{% block content %}
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header-error py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container text-center py-5 my-5">
+            <div class="text-white mb-4 animated slideInDown">
+                <h1 class="display-3 text-white">Error 404</h1>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- 404 Start -->
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
+                    <h1 class="display-1">404</h1>
+                    <h1 class="mb-4">Oops! Página no encontrada</h1>
+                    <p class="mb-4">Parece que la página que buscas se ha perdido en el ciberespacio. Intenta volver al <a href="/">inicio</a> o utiliza el menú para encontrar lo que necesitas.</p>
+                    <a class="btn outline-light-btn py-3 px-4" href="/">Regresar al inicio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 404 End -->
+
+{% endblock %}

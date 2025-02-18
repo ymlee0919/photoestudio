@@ -1,0 +1,12 @@
+node_modules
+# Keep environment variables out of version control
+.env
+.vscode
+
+dist/
+
+public/images/gallery/*.jpg
+public/images/services/*.jpg
+
+TODO.txt
+pass.txt

@@ -1,0 +1,84 @@
+{% extends "base.html.twig" %}
+{% set page='gallery' %}
+{% block title %}Galería{% endblock %}
+
+{% block css %}
+    <link href="lib/gallery/css/gallery.css" rel="stylesheet">
+    <link href="lib/gallery/css/carousel.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container text-center py-5 my-5">
+            <div class="text-white mb-4 animated slideInDown">
+                <h1 class="display-3 text-white">Galería</h1>
+                <p class="display-7 text-white mb-4 animated slideInDown">Echa un vistazo a algunas de nuestras sesiones más memorables.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Gallery Start -->
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            
+            <div class="row mbr-gallery mbr-masonry" data-masonry="{&quot;percentPosition&quot;: true }">
+                {% for image in images %}
+                <div class="col-12 col-md-6 col-lg-4 item gallery-image">
+                    <div class="item-wrapper wow fadeIn" data-wow-delay="{{ (loop.index + 1) / 10 }}s" data-toggle="modal" data-bs-toggle="modal" data-target="#gallery-modal" data-bs-target="#gallery-modal">
+                        <img class="w-100" src="{{ image.remoteUrl }}" alt="Gallery image" data-slide-to="{{ loop.index0 }}" data-bs-slide-to="{{ loop.index0 }}" data-target="#lb-gallery" data-bs-target="#lb-gallery">
+                        <div class="icon-wrapper">
+                            <span class="fa fa-search"></span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="modal mbr-slider" tabindex="-1" role="dialog" aria-hidden="true" id="gallery-modal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="carousel slide" id="lb-gallery" data-interval="5000" data-bs-interval="5000">
+                                <div class="carousel-inner">
+                                {% for image in images %}
+                                    <div class="carousel-item {% if loop.index0 == 0 %} active{% endif %}">
+                                        <img class="d-block" src="{{ image.remoteUrl }}" alt="Gallery image">
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                <ol class="carousel-indicators" style="position:fixed">
+                                    {% for image in images %}
+                                        <li data-slide-to="{{ loop.index0 }}" data-bs-slide-to="{{ loop.index0 }}" {% if loop.index0 == 0 %} class="active"{% endif %} data-target="#lb-gallery" data-bs-target="#lb-gallery"></li>
+                                    {% endfor %}
+                                </ol>
+                                <a role="button" href="" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                                    <span class="fa fa-times" aria-hidden="true"></span>
+                                </a>
+                                <a class="carousel-control-prev carousel-control" role="button" data-slide="prev" data-bs-slide="prev" href="#lb-gallery">
+                                    <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                                    <span class="sr-only visually-hidden">Previous</span>
+                                </a>
+                                <a class="carousel-control-next carousel-control" role="button" data-slide="next" data-bs-slide="next" href="#lb-gallery">
+                                    <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                                    <span class="sr-only visually-hidden">Next</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Gallery End -->
+
+    {% include "./sections/reserve.html.twig" %}
+    
+{% endblock %}
+
+{% block js %}
+<script src="lib/imagesloaded/js/imagesloaded.pkgd.min.js"></script>
+{% endblock %}

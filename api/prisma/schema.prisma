@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Accounts {
+  userId      Int     @id @default(autoincrement()) @map("user_id")
+  user        String  @unique
+  name        String
+  password    String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime? @map("updated_at")
+
+  @@map("accounts")
+}
+
+model Settings {
+  settingsId    Int     @id @default(autoincrement()) @map("settings_id")
+  businessName  String  @map("business_name")
+  address       String
+  phone         String
+  currency      String
+  email         String
+  galleryLimit  Int     @default(30) @map("gallery_limit")
+  updatedAt     DateTime? @map("updated_at")
+
+  @@map("settings")
+}
+
+model Gallery {
+  imageId       Int     @id @default(autoincrement()) @map("image_id")
+  imageUrl      String  @unique @map("image_url")
+  remoteUrl     String? @map("remote_url")
+  position      Int
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+
+  @@map("gallery")
+}
+
+model Categories {
+  categoryId    Int @id @default(autoincrement()) @map("category_id")
+  category      String
+  Offers        Offers[]
+  position      Int @default(0)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+
+  @@map("category")
+}
+
+model Offers {
+  offerId       Int     @id @default(autoincrement()) @map("offer_id")
+  categoryId    Int
+  Category      Categories @relation(fields: [categoryId], references: [categoryId])
+  type          String
+  name          String  @default("Offer")
+  price         Int
+  showHome      Boolean @map("show_home")
+  main          Boolean @default(false)
+  Items         OfferItems[]
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+
+  @@map("offers")
+}
+
+model OfferItems {
+  offerItemId   Int     @id @default(autoincrement()) @map("offer_item_id")
+  offerId       Int     @map("offer_id")
+  offer         Offers  @relation(fields: [offerId], references: [offerId])
+  itemName      String  @map("item_name")
+  itemDetails   String? @map("item_details")
+
+  @@map("offer_items")
+}
+
+model Services {
+  serviceId     Int     @id @default(autoincrement()) @map("service_id")
+  service       String
+  image         String
+  remoteUrl     String? @map("remote_url")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+}

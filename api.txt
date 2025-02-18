@@ -1,0 +1,117 @@
+GET: /accounts
+Response: Array<AccountInfo> 
+AccountInfo {
+	userId: number;
+    user: string;
+    name: string;
+}
+
+POST: /accounts
+Request: AccountCreationDTO
+AccountCreationDTO {
+    readonly name: string;
+    readonly user: string;
+    readonly password: string;
+}
+Response: CreatedAccount
+CreatedAccount {
+    userId: number;
+    user: string;
+    name: string;
+    createdAt: Date
+}
+
+PUT: /accounts/:id
+Request: AccountUpdateDTO
+AccountUpdateDTO {
+	readonly name: string;
+}
+Response: UpdatedAccount
+UpdatedAccount {
+    userId: number;
+    user: string;
+    name: string;
+    updatedAt: Date
+}
+
+PUT: /accounts/:id/credentials
+Request: AccountCredentialsUpdateDTO
+AccountCredentialsUpdateDTO {
+	readonly user: string;
+    readonly password?: string;
+}
+Response: UpdatedAccount
+UpdatedAccount {
+    userId: number;
+    user: string;
+    name: string;
+    updatedAt: Date
+}
+
+DELETE: /accounts/:id
+Response: NO CONTENT
+
+//////////////// - Settings - /////////////////////
+GET: /settings
+Response: SettingsInfo 
+SettingsInfo {
+	settingsId: number;
+    businessName: string;
+    address: string;
+    phone: string;
+    currency: string;
+}
+
+PUT: /settings
+Request: SettingsInfoDTO
+SettingsInfoDTO {
+    readonly businessName: string;
+    readonly address: string;
+    readonly phone: string;
+    readonly currency: string;
+}
+Response: SettingsUpdated
+SettingsUpdated {
+    businessName: string;
+    address: string;
+    phone: string;
+    currency: string;
+    updatedAt: Date;
+}
+
+//////////////// - Offers - /////////////////////
+
+GET: /offers
+Response: Array<Offers> 
+Offers {
+	offerId: number;
+    price: number;
+    showHome: boolean;
+    items: OfferItem[];
+}
+OfferItem {
+    offerItemId: number;
+    itemName: string;
+    itemDetails?: string;
+}
+
+POST: /offers
+Request: OfferInfoDTO
+OfferInfoDTO {
+    price: number;
+    showHome: boolean;
+    items: OfferItemDTO[];
+}
+OfferItemDTO {
+    itemName: string;
+    itemDetails?: string;
+}
+Response: ActionResult
+
+PUT: /offers/:id
+Request: OfferInfoDTO
+Response: ActionResult
+
+DELETE: /offers/:id
+Response: ActionResult
+

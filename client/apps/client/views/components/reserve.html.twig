@@ -1,0 +1,39 @@
+<div id="reserve-modal" class="modal " tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content rounded-5 shadow-lg border-0">
+            <div class="modal-header shadow-sm secondary-bg">
+                <h5 class="modal-title text-center">Reservar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="hidden" name="phone" id="reserve-phone" value="{{ business.phone }}">
+                    <label for="client-name-input" class="form-label base-text">Cómo te llamas?</label>
+                    <input type="text" class="form-control" id="client-name-input" placeholder="Tu nombre">
+                </div>
+                <div class="mb-3">
+                    <label for="client-service-select" class="form-label base-text">Qué servicio necesita?</label>
+                    <select id="client-service-select" class="form-select" aria-label="Seleccione un servicio">
+                        <option selected value="NONE" disabled="disabled">Seleccione un servicio</option>
+                        {% for service in servicesList %}
+                        <option value="{{ service.service }}">{{ service.service }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="client-offer-select" class="form-label base-text">Qué oferta te llamó la atención?</label>
+                    <select id="client-offer-select" class="form-select" aria-label="Seleccione una oferta">
+                        <option selected value="NONE" disabled="disabled">Seleccione una oferta</option>
+                        {% for offer in offersList %}
+                        <option value="{{ offer.name }}::{{ offer.price }} {{ business.currency }}">{{ offer.name }} - {{ offer.price }} {{ business.currency }}</option>
+                        {% endfor %}
+                        <option value="IDK">No sé cuál escoger</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer text-center d-block">
+                <a href="#" type="button" target="_blank" id="request-btn" aria-disabled="true" class="btn disabled outline-light-btn py-2 px-2"><i class="fab fa-whatsapp"></i> &nbsp;Solicitar</a>
+            </div>
+        </div>
+    </div>
+</div>
