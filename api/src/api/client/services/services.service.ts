@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DatabaseService } from "src/services/database/database.service";
+import { CloudService } from 'src/services/cloud/cloud.service';
 
 export interface ServiceInfo {
     serviceId: number;
@@ -23,7 +24,10 @@ export class ClientServicesService {
      * Constructor of the class
      * @param database Database provider service
      */
-    constructor( private readonly database:DatabaseService){}
+    constructor( 
+        private readonly database:DatabaseService,
+        private readonly cloudService: CloudService
+    ){}
 
     /**
      * Get the list of services
@@ -35,8 +39,29 @@ export class ClientServicesService {
         let list = await this.database.services.findMany({orderBy: {
             service: 'asc'
         }, select: {
-            serviceId: true, service: true, image: true
+            serviceId: true, service: true, image: true, remoteUrl: true, expiry: true
         }});
+
+        // Update remote url if expires in less than 1 hour
+        let now = Math.round(Date.now() / 60000);
+        for(let i = 0; i < list.length; i++)
+        {
+            if(list[i].expiry - now < 3600)
+            {
+                let remoteUrl = await this.cloudService.getSharedLink(list[i].image);
+                await this.database.services.update({
+                    where: {
+                        serviceId: list[i].serviceId
+                    }, data : {
+                        remoteUrl, expiry: now + 72000
+                    }
+                });
+
+                list[i].image = remoteUrl;
+            }
+            else
+                list[i].image = list[i].remoteUrl;
+        }
 
         return list;
     }

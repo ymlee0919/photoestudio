@@ -4,7 +4,13 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { cloudConfig } from './cloud.config';
 import * as path from 'path'
 import * as fs from 'fs'
+import axios, { AxiosResponse } from 'axios';
 
+interface FilebaseResponse {
+	cid: string;
+	name: string;
+	meta: Object;
+}
 
 @Injectable()
 export class CloudService {
@@ -15,13 +21,11 @@ export class CloudService {
 			endpoint: cloudConfig.endpoint,
 			region: cloudConfig.region,
 			credentials: {
-				accessKeyId: cloudConfig.accessKeyId,
-				secretAccessKey: cloudConfig.secretAccessKey,
+				accessKeyId: cloudConfig.accessKey,
+				secretAccessKey: cloudConfig.secretKey,
 			},
 		});
 	}
-
-
 
 	async uploadFile(filePath: string): Promise<string> 
 	{
@@ -52,6 +56,10 @@ export class CloudService {
 		if (process.env.NODE_ENV === 'development')
 			return "http://localhost:3000/" + filePath;
 
+		let url = `https://bopaduxavinnhoicgnqe.supabase.co/storage/v1/object/public/${cloudConfig.bucketName}/${filePath}`;
+		return url;
+		
+		/*
 		const command = new GetObjectCommand({
 			Bucket: cloudConfig.bucketName,
 			Key: filePath,
@@ -59,11 +67,12 @@ export class CloudService {
 		
 		const signedUrl = await getSignedUrl(this.s3Client, command, { expiresIn });
 		return signedUrl;
+		*/
 	}
 
 	async deleteFile(filePath: string): Promise<void> {
 
-		//return;
+		if (process.env.NODE_ENV === 'development') return;
 		
 		const command = new DeleteObjectCommand({
 		  Bucket: cloudConfig.bucketName,

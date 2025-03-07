@@ -39,15 +39,8 @@ export class GalleryController {
     @Get('/')
     @HttpCode(HttpStatus.OK)
     async getList(): Promise<Array<ImageInfo>>{
-        let result = await this.manager.getList();
-        
-        let items = result.map(async (value: ImageInfo) => {
-            let url = await this.cloudService.getSharedLink(value.imageUrl, 72000)
-            return {...value, remoteUrl: url };
-        });
-        let results = await Promise.all(items);
-        
-        return results;
+        let result = await this.manager.getList();        
+        return result;
     }
 
     @Post('/')
@@ -67,7 +60,8 @@ export class GalleryController {
             // Add record to database
             let created = await this.manager.addImage({
                 imageUrl: fileName,
-                remoteUrl: remoteUrl
+                remoteUrl: remoteUrl,
+                expiry: Math.round(Date.now() / 60000) + 72000
             });
 
             return created;
@@ -104,7 +98,9 @@ export class GalleryController {
 
             // Update the database
             let updated = await this.manager.updateImage(imageId, {
-                imageUrl: fileName, remoteUrl
+                imageUrl: fileName, 
+                remoteUrl, 
+                expiry: Math.round(Date.now() / 60000) + 72000
             });
 
             // Delete old local and remote images

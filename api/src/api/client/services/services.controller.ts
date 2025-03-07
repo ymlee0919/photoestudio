@@ -16,13 +16,7 @@ export class ClientServicesController {
     @HttpCode(HttpStatus.OK)
     async getServices(): Promise<Array<ServiceInfo>>{
         let result = await this.manager.getList();
-        let items = result.map(async (value: ServiceInfo) => {
-            let url = await this.cloudService.getSharedLink(value.image, 72000)
-            return {...value, remoteUrl: url };
-        });
-        let results = await Promise.all(items);
-        
-        return results;
+        return result;
     }
 
     @Public()

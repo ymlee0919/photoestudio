@@ -39,15 +39,8 @@ export class ServicesController {
     @Get('/')
     @HttpCode(HttpStatus.OK)
     async getList(): Promise<Array<ServiceInfo>>{
-        let result = await this.manager.getList();
-
-        let items = result.map(async (value: ServiceInfo) => {
-            let url = await this.cloudService.getSharedLink(value.image, 72000)
-            return {...value, remoteUrl: url };
-        });
-        let results = await Promise.all(items);
-        
-        return results;
+        let result = await this.manager.getList();        
+        return result;
     }
 
     @Post('/')
@@ -68,7 +61,7 @@ export class ServicesController {
             
             // Add record to database
             let created = await this.manager.addService(service.service, {
-                imageUrl: fileName, remoteUrl
+                imageUrl: fileName, remoteUrl, expiry: Math.round(Date.now() / 60000) + 72000
             });
 
             return created;
@@ -107,7 +100,7 @@ export class ServicesController {
                 remoteUrl = await this.cloudService.uploadFile(fileName);
 
             let updated = await this.manager.updateService(serviceId, service.service, (!!file) ? {
-                imageUrl: fileName, remoteUrl
+                imageUrl: fileName, remoteUrl, expiry: Math.round(Date.now() / 60000) + 72000
             } : null);
 
             return updated;

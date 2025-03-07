@@ -7,4 +7,5 @@ export type ActionResult = {
 export interface ImageRef {
   imageUrl: string;
   remoteUrl: string;
+  expiry: number;
 }

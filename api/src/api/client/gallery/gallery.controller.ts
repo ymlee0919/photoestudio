@@ -16,13 +16,7 @@ export class ClientGalleryController {
     @HttpCode(HttpStatus.OK)
     async getHomeList(): Promise<Array<ImageInfo>>{
         let result = await this.manager.getHomeList();
-        let items = result.map(async (value: ImageInfo) => {
-            let url = await this.cloudService.getSharedLink(value.imageUrl, 72000)
-            return {...value, remoteUrl: url };
-        });
-        let results = await Promise.all(items);
-        
-        return results;
+        return result;
     }
     
     @Public()
@@ -30,13 +24,6 @@ export class ClientGalleryController {
     @HttpCode(HttpStatus.OK)
     async getList(): Promise<Array<ImageInfo>>{
         let result = await this.manager.getList();
-        
-        let items = result.map(async (value: ImageInfo) => {
-            let url = await this.cloudService.getSharedLink(value.imageUrl, 72000)
-            return {...value, remoteUrl: url };
-        });
-        let results = await Promise.all(items);
-        
-        return results;
+        return result;
     }
 }

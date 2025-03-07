@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { InternalDatabaseError } from "src/api/common/errors/database.error";
 import { ImageInfo, CreatedImage, UpdatedImage } from "./gallery.types";
 import { ImageRef } from "src/api/common/types/common.types";
+import { CloudService } from 'src/services/cloud/cloud.service';
 
 /**
  * Service for gallery
@@ -12,13 +13,13 @@ import { ImageRef } from "src/api/common/types/common.types";
 @Injectable()
 export class GalleryService {
 
-    
     /**
      * Constructor of the class
      * @param database Database provider service
      */
     constructor(
-        private readonly database:DatabaseService
+        private readonly database:DatabaseService,
+        private readonly cloudService: CloudService
     ){}
 
     /**
@@ -31,6 +32,25 @@ export class GalleryService {
         let list = await this.database.gallery.findMany({orderBy: {
             position: 'asc'
         }});
+
+        // Update remote url if expires in less than 1 hour
+        let now = Math.round(Date.now() / 60000);
+        for(let i = 0; i < list.length; i++)
+        {
+            if(list[i].expiry - now < 3600)
+            {
+                let remoteUrl = await this.cloudService.getSharedLink(list[i].imageUrl);
+                await this.database.gallery.update({
+                    where: {
+                        imageId: list[i].imageId
+                    }, data : {
+                        remoteUrl, expiry: now + 72000
+                    }
+                });
+
+                list[i].remoteUrl = remoteUrl;
+            }
+        }
 
         return list;
     }
@@ -68,6 +88,7 @@ export class GalleryService {
             data : {
                 imageUrl: image.imageUrl,
                 remoteUrl: image.remoteUrl,
+                expiry: image.expiry,
                 position: newPosition
             }, select : {
                 imageId: true, imageUrl: true, remoteUrl: true, position: true, createdAt: true
@@ -95,7 +116,8 @@ export class GalleryService {
             data: {
                 imageUrl: newImage.imageUrl,
                 remoteUrl: newImage.remoteUrl,
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                expiry: newImage.expiry,
             }, select : {
                 imageId: true, imageUrl: true, remoteUrl: true, position: true, updatedAt: true
             }

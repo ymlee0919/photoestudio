@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: photos-client
+    name: myphotoestudio
     runtime: node
     buildCommand: npm install
     startCommand: npm run start

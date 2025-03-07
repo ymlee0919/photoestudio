@@ -4,6 +4,7 @@ import { InvalidOperationError } from "src/api/common/errors/invalid.error";
 
 import { ImageRef } from "src/api/common/types/common.types";
 import { ServiceInfo, CreatedService, UpdatedService, UpdatedServiceInfo } from "./services.types";
+import { CloudService } from 'src/services/cloud/cloud.service';
 
 /**
  * Service for gallery
@@ -17,7 +18,8 @@ export class ServicesService {
      * @param database Database provider service
      */
     constructor(
-        private readonly database:DatabaseService
+        private readonly database:DatabaseService,
+        private readonly cloudService: CloudService
     ){}
 
     /**
@@ -30,8 +32,27 @@ export class ServicesService {
         let list = await this.database.services.findMany({orderBy: {
             service: 'asc'
         }, select: {
-            serviceId: true, service: true, image: true, remoteUrl: true
+            serviceId: true, service: true, image: true, remoteUrl: true, expiry: true
         }});
+
+        // Update remote url if expires in less than 1 hour
+        let now = Math.round(Date.now() / 60000);
+        for(let i = 0; i < list.length; i++)
+        {
+            if(list[i].expiry - now < 3600)
+            {
+                let remoteUrl = await this.cloudService.getSharedLink(list[i].image);
+                await this.database.services.update({
+                    where: {
+                        serviceId: list[i].serviceId
+                    }, data : {
+                        remoteUrl, expiry: now + 72000
+                    }
+                });
+
+                list[i].remoteUrl = remoteUrl;
+            }
+        }
 
         return list;
     }
@@ -68,7 +89,8 @@ export class ServicesService {
             data : {
                 service: serviceName,
                 image: image.imageUrl,
-                remoteUrl: image.remoteUrl
+                remoteUrl: image.remoteUrl,
+                expiry: image.expiry
             }, select : {
                 serviceId: true, service: true, image: true, remoteUrl: true, createdAt: true
             }
@@ -113,6 +135,7 @@ export class ServicesService {
                     service: newServiceName,
                     image: newImage.imageUrl,
                     remoteUrl: newImage.remoteUrl,
+                    expiry: newImage.expiry,
                     updatedAt: new Date()
                 },
                 select: {
