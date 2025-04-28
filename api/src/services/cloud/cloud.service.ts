@@ -4,7 +4,8 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { cloudConfig } from './cloud.config';
 import * as path from 'path'
 import * as fs from 'fs'
-import axios, { AxiosResponse } from 'axios';
+
+import { MimeType } from 'mime-type'
 
 interface FilebaseResponse {
 	cid: string;
@@ -18,6 +19,7 @@ export class CloudService {
 
 	constructor() {
 		this.s3Client = new S3Client({
+			forcePathStyle: true,
 			endpoint: cloudConfig.endpoint,
 			region: cloudConfig.region,
 			credentials: {
@@ -35,12 +37,15 @@ export class CloudService {
 			return "http://localhost:3000/images/" + localFilePath;
 
 		const fileContent = fs.readFileSync(localFilePath);
+		
+		const mime = new MimeType()
+		let contentType = mime.lookup(localFilePath);
 
 		const command = new PutObjectCommand({
 			Bucket: cloudConfig.bucketName,
 			Key: filePath,
 			Body: fileContent,
-			ACL: 'public-read', // Make the file publicly accessible
+			ContentType: contentType
 		});
 
 		await this.s3Client.send(command);

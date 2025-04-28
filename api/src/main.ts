@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { existsSync, mkdirSync, copyFileSync } from 'fs';
+import { ClientModule } from './client/client.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  ClientModule.setup(app);
   
   // Public assets
   let uploadPath = join(__dirname, '../../', 'dist/public');

@@ -26,7 +26,7 @@ const Home = () => {
 			<h1 className="text-slate-600 text-3xl text-right">Administration Dashboard</h1>
 			<br></br>
 			<br></br>
-			<div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:sm:grid-cols-3 lg:grid-cols-4 gap-5">
 				<div className="stats shadow bg-base-100">
 					<div className="stat">
 						<div className="stat-figure text-indigo-500">

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AdminModule } from './api/admin/admin.module';
-import { ClientModule } from './api/client/client.module';
+import { ClientModule } from './client/client.module';
 import { ServeStaticModule } from '@nestjs/serve-static'; 
 import { join } from 'path';
 import { RouterModule } from '@nestjs/core';
@@ -10,8 +10,7 @@ imports: [
 	AdminModule, 
 	ClientModule,
 	RouterModule.register([
-		{ path: 'api', module: AdminModule },
-		{ path: 'client', module: ClientModule,}
+		{ path: 'api', module: AdminModule }
 	]),
 	ServeStaticModule.forRoot({
 		rootPath: join(__dirname, '../../', 'public')

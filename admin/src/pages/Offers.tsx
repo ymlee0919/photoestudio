@@ -111,7 +111,7 @@ const Offers = () => {
 					<p className="text-center">No offers registered</p>
 					</> :
 				
-					<div className="grid grid-cols-2 lg:grid-cols-3 gap-4 pb-7">
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:sm:grid-cols-3 gap-4 pb-7">
 						{ stores.offersStore.content?.map((offer: OfferContent) => {
 							return (
 								<div key={offer.offerId} className={`card ${offer.main ? 'bg-amber-100' : 'bg-base-100'} shadow-xl ${offer.showHome ? 'indicator w-full' : ''}`}>
